@@ -1,4 +1,5 @@
-set(COMPONENT_SRCS "main.cpp")
-set(COMPONENT_ADD_INCLUDEDIRS "")
+set(srcs "main.cpp"
+        "board.cpp")
 
-register_component()
+idf_component_register(SRCS "${srcs}"
+                    INCLUDE_DIRS  ".")
