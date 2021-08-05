@@ -11,6 +11,8 @@
 #define BUTTON_IO_NUM 0
 #define BUTTON_ACTIVE_LEVEL 0
 
+extern void example_ble_mesh_send_gen_onoff_set(void);
+
 struct _led_state led_state[3] = {
     {LED_OFF, LED_OFF, LED_R, "red"},
     {LED_OFF, LED_OFF, LED_G, "green"},
@@ -52,6 +54,8 @@ static void board_led_init(void)
 static void button_tap_cb(void *arg)
 {
   ESP_LOGI(TAG, "tap cb (%s)", (char *)arg);
+
+  example_ble_mesh_send_gen_onoff_set();
 }
 
 static void board_button_init(void)
