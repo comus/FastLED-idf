@@ -39,6 +39,8 @@
 
 #define CID_ESP 0x02E5
 
+#define DATA_MAX_SIZE 10240 * 8
+
 static uint8_t dev_uuid[16] = {0xdd, 0xdd};
 
 static struct example_info_store
@@ -47,11 +49,13 @@ static struct example_info_store
   uint16_t app_idx; /* AppKey Index */
   uint8_t onoff;    /* Remote OnOff */
   uint8_t tid;      /* Message TID */
+  uint8_t data[DATA_MAX_SIZE];
 } __attribute__((packed)) store = {
     .net_idx = ESP_BLE_MESH_KEY_UNUSED,
     .app_idx = ESP_BLE_MESH_KEY_UNUSED,
     .onoff = LED_OFF,
     .tid = 0x0,
+    .data = {},
 };
 
 static nvs_handle_t NVS_HANDLE;
@@ -113,6 +117,8 @@ static void mesh_example_info_restore(void)
   {
     ESP_LOGI(TAG, "Restore, net_idx 0x%04x, app_idx 0x%04x, onoff %u, tid 0x%02x",
              store.net_idx, store.app_idx, store.onoff, store.tid);
+    // ESP_LOG_BUFFER_HEX("data", store.data, 100);
+    ESP_LOGI(TAG, "data loaded!!!!!!!!!!!! %d", sizeof(store.data));
   }
 }
 
@@ -458,7 +464,7 @@ esp_err_t ble_mesh_nvs_store(nvs_handle_t handle, const char *key, const void *d
   }
 
   ESP_LOGI(TAG, "Store, key \"%s\", length %u", key, length);
-  ESP_LOG_BUFFER_HEX("EXAMPLE_NVS: Store, data", data, length);
+  // ESP_LOG_BUFFER_HEX("EXAMPLE_NVS: Store, data", data, length);
   return err;
 }
 
@@ -495,7 +501,7 @@ esp_err_t ble_mesh_nvs_restore(nvs_handle_t handle, const char *key, void *data,
   else
   {
     ESP_LOGI(TAG, "Restore, key \"%s\", length %u", key, length);
-    ESP_LOG_BUFFER_HEX("EXAMPLE_NVS: Restore, data", data, length);
+    // ESP_LOG_BUFFER_HEX("EXAMPLE_NVS: Restore, data", data, length);
   }
 
   return err;
@@ -503,6 +509,10 @@ esp_err_t ble_mesh_nvs_restore(nvs_handle_t handle, const char *key, void *data,
 
 void app_main()
 {
+  for (int i = 0; i < DATA_MAX_SIZE; i++) {
+    store.data[i] = 100;
+  }
+
   printf(" entering app main, call add leds\n");
   FastLED.addLeds<LED_TYPE, DATA_PIN_1>(leds1, NUM_LEDS);
 
